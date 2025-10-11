@@ -1,0 +1,36 @@
+{
+  "name": "foodies-app",
+  "version": "1.0.0",
+  "description": "A full-stack recipe sharing application for food enthusiasts",
+  "main": "server/dist/server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "build": "npm run build:server && npm run build:client",
+    "build:server": "cd server && npm run build",
+    "build:client": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "test": "npm run test:server && npm run test:client",
+    "test:server": "cd server && npm test",
+    "test:client": "cd client && npm test",
+    "setup": "npm install && cd server && npm install && cd ../client && npm install",
+    "db:generate": "cd server && npx prisma generate",
+    "db:migrate": "cd server && npx prisma migrate dev",
+    "db:seed": "cd server && npx prisma db seed"
+  },
+  "keywords": [
+    "food",
+    "recipes",
+    "cooking",
+    "full-stack",
+    "react",
+    "express",
+    "typescript"
+  ],
+  "author": "Foodies Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
