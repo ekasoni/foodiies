@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: foodies-postgres
+    environment:
+      POSTGRES_DB: foodies_db
+      POSTGRES_USER: foodies_user
+      POSTGRES_PASSWORD: foodies_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - foodies-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: foodies-backend
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://foodies_user:foodies_password@postgres:5432/foodies_db?schema=public
+      JWT_SECRET: your-super-secret-jwt-key-here
+      JWT_EXPIRES_IN: 7d
+      PORT: 5000
+      FRONTEND_URL: http://localhost:3000
+      STRIPE_SECRET_KEY: sk_test_your_stripe_secret_key
+      STRIPE_WEBHOOK_SECRET: whsec_your_webhook_secret
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    volumes:
+      - ./backend/uploads:/app/uploads
+    networks:
+      - foodies-network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: foodies-frontend
+    environment:
+      VITE_API_URL: http://localhost:5000/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - foodies-network
+
+volumes:
+  postgres_data:
+
+networks:
+  foodies-network:
+    driver: bridge
